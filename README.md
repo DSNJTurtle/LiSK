@@ -1,9 +1,9 @@
 # LiSK
 
+**LiSK** is a lightweight C++ library for the numerical evaluation of classical polylogarithms Li(n,x) and the special function Li22(x,y) for arbitrary complex arguments. The evaluation is possible in double and in arbitrary precision arithmetics. The implementation is based on the algorithms presented in arXiv:1601.02649 (or click [here](http://arxiv.org/abs/1601.02649)).
+
 If you need more information than provided in this file, contact the author:
 Sebastian Kirchner (sebastian.t.kirchnerREMOVETHIS@gmail.com)
-
-**LiSK** is a lightweight C++ library for the numerical evaluation of classical polylogarithms Li(n,x) and the special function Li22(x,y) for arbitrary complex arguments. The evaluation is possible in double and in arbitrary precision arithmetics. The implementation is based on the algorithms presented in arXiv:1601.02649 (or click [here](http://arxiv.org/abs/1601.02649)).
 
 ---
 
@@ -53,7 +53,7 @@ where `m` should be smaller than `n`. One might also call
 	LiSK::LiSK<T>(n,p).Li(m,x);
 	LiSK::LiSK<T>(n,p).Li22(x,y);
 
-but this is strongly **not** reccomended due to the above mentioned reasons. However, special wrapper funtions exist for the classical polylogarithms with weights `n<=4`
+but this is strongly **not** recommended due to the above mentioned reasons. However, special wrapper funtions exist for the classical polylogarithms with weights `n<=4`
 
 	lisk.Li1(x);
 	lisk.Li2(x);
@@ -71,3 +71,7 @@ In case some error is encountered **LiSK** will throw a `std::runtime_error`. He
 	
 Last but not least it must be ensured that all expressions, initial and intermediate, are well defined. To this end a small positive imaginary part is added to the initial arguments x and y of `Li(n,x)` and `Li22(x,y)`, i.e. `x->x-iep`.
 The value of `ep` is set to `10^(-(p-_offset))` during initialisation. Hereby defines `p` the requested precision in the constructor (`p=17` in double precision mode). The default value of `_offset` is 2. The user can change this value at the top of the **LiSK** header.
+
+## Miscellaneous
+
+**LiSK** has been tested under **SUSE Linux** and is known to work with the **g++-4.8.3**, **clang++-3.5** and **icc 14.0.2** compiler versions using the GNU C++ standard library. At the moment some problem in **CLN** prevent using the compiler optimisation on **OS X** with the LLVM C++ standard library (OK without optimisation).
