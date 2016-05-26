@@ -130,11 +130,13 @@ numtype LiSK::LiSK<numtype>::Li22(const numtype x, const numtype y) {
 	
 	if (is_zero(x-one) && is_zero(y-one)) return (((numtype)3)*_constants.PosZeta[4])/((numtype)4);
 	if (is_zero(x+one) && is_zero(y+one)) return -(((numtype)3)*_constants.PosZeta[4])/((numtype)16);
-	
+
+#if 0	// Using the defining sum gives better results
 	if (is_zero(x-y)) {
-		const auto Li2 = _Li2(tx);
+		const numtype Li2 = _Li2(tx);
 		return (Li2*Li2 - _Li4(tx*tx))/((numtype)2);
 	}
+#endif
 	
 	if (is_zero(one/x-y)) {
 		
