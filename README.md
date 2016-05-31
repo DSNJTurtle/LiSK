@@ -33,15 +33,15 @@ in the **example** directory. If **CLN** is not found automatically the _CLN\_IN
 ##Usage
 
 In the following **T** denotes one of the two currently supported types 
-`std::complex<double>` or `cln::cl_N`. The first action should be to create a **LiSK** object of type `T` and precison `p` via
+`std::complex<double>` or `cln::cl_N`. The first action should be to create a **LiSK** object of type `T` and precision `p` via
 	
 	LiSK::LiSK<T> lisk(n,p);
 	
 During object creation **LiSK** is initialised and all constants required for the computation of the `Li(n,x)` and `Li22(x,y)` are pre-computed. This reflects the main idea of **LiSK**; prepare and save all needed constants during its initialisation phase and use them during the actual computation. The constructor  `LiSK(n=4,prec=34)` features two optional arguments.
 
-The first argument `n` defines the weigth of the `Li(n,x)` up to which the constants are computed during **LiSK**s initialisation phase. It is not mandatory but advised to set `n` to a value which resembles the highest expected weights. If higher weigths are encountered during the computation the constants will be adapted dynamically. This, obviously, leads to longer evaluation times for the polylogarithms for which the higher weights have been encountered. This situation should be avoided as much as possible.
+The first argument `n` defines the weight of the `Li(n,x)` up to which the constants are computed during **LiSK**s initialisation phase. It is not mandatory but advised to set `n` to a value which resembles the highest expected weights. If higher weights are encountered during the computation the constants will be adapted dynamically. This, obviously, leads to longer evaluation times for the polylogarithms for which the higher weights have been encountered. This situation should be avoided as much as possible.
 
-The second argument of the constructor sets the desired precison if `T=cln::cl_N` is chosen. This argument is superfluous in the double precision case. E.g. set `p=34` to obtain results with 34 digit precision. Internally all floating point values are set to this precision. This is also true for the initial complex arguments x and y supplied by the user. The user has to ensure that the supplied input values match the requested precision.
+The second argument of the constructor sets the desired precision if `T=cln::cl_N` is chosen. This argument is superfluous in the double precision case. E.g. set `p=34` to obtain results with 34 digit precision. Internally all floating point values are set to this precision. This is also true for the initial complex arguments x and y supplied by the user. The user has to ensure that the supplied input values match the requested precision.
 
 Calling the public wrapper functions for the computation of `Li(m,x)` for positive integer weights `m` and `Li22(x,y)` at given points x and y is given by
 
@@ -53,7 +53,7 @@ where `m` should be smaller than `n`. One might also call
 	LiSK::LiSK<T>(n,p).Li(m,x);
 	LiSK::LiSK<T>(n,p).Li22(x,y);
 
-but this is strongly **not** recommended due to the above mentioned reasons. However, special wrapper funtions exist for the classical polylogarithms with weights `n<=4`
+but this is strongly **not** recommended due to the above mentioned reasons. However, special wrapper functions exist for the classical polylogarithms with weights `n<=4`
 
 	lisk.Li1(x);
 	lisk.Li2(x);
