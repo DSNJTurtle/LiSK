@@ -1,8 +1,8 @@
 # LiSK
 
-**LiSK** is a lightweight C++ library for the numerical evaluation of classical polylogarithms Li(n,x) and the special function Li22(x,y) for arbitrary complex arguments. The evaluation is possible in double and in arbitrary precision arithmetics. The implementation is based on the algorithms presented in arXiv:1601.02649 (or click [here](http://arxiv.org/abs/1601.02649)).
+**LiSK** is a lightweight C++ library for the numerical evaluation of classical polylogarithms Li(n,x) and the special function Li22(x,y) for arbitrary complex arguments. The evaluation is possible in double and in arbitrary precision arithmetics. The implementation is based on the algorithms presented in [arXiv:1601.02649](http://arxiv.org/abs/1601.02649).
 
-If you need more information than provided in this file, contact the author:
+If you need more information than provided in this file or in [arXiv:1605.09571](http://arxiv.org/abs/1605.09571), contact the author:
 Sebastian Kirchner (sebastian.t.kirchnerREMOVETHIS@gmail.com)
 
 ---
