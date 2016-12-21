@@ -18,8 +18,8 @@ add_executable( example "example.cpp" )
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 ### Include directories
-include_directories( "${CMAKE_CURRENT_SOURCE_DIR}/../LiSK" )
-include_directories( SYSTEM "${CLN_INCLUDE_DIR}" )
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/../LiSK )
+include_directories( SYSTEM ${CLN_INCLUDE_DIR} )
 
 ### Linking
-target_link_libraries( example "${CLN_LIB}" )
+target_link_libraries( example ${CLN_LIB} )
