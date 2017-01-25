@@ -108,7 +108,7 @@ namespace LiSK {
 		 *  assumed during construction and the user choice may be overwritten. But
 		 *  higher values will be respected.
 		 */
-		const std::unordered_map<std::string, size_t> _user_max_values = {
+		const std::unordered_map<std::string, size_t> _user_max_values {
 			{"nHarmNum",3},			// Harmonic numbers H(n)
 			{"nPosZeta",4},			// Zeta(n) for n>=0
 			{"nNegZeta",100},		// Zeta(n) for n<0

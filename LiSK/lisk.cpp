@@ -36,7 +36,13 @@
  *  C'stors                                *
  *******************************************/
 template <typename numtype>
-LiSK::LiSK<numtype>::LiSK(const size_t n, const size_t prec) : _prec(prec<17 ? 17:prec), _constants_clR(n), _constants(n), _iep_d(0.,std::pow(10,-(17-_offset))), _iep_clN(cln::complex(0,cln::cl_F(("1.e-"+std::to_string(prec-_offset)+"_"+std::to_string(prec)).c_str()))){
+LiSK::LiSK<numtype>::LiSK(const size_t n, const size_t prec) :
+        _prec{prec<17 ? 17:prec},
+        _constants_clR{n},
+        _constants{n},
+        _iep_d{0.,std::pow(10,-(17-_offset))},
+        _iep_clN{cln::complex(0,cln::cl_F(("1.e-"+std::to_string(prec-_offset)+"_"+std::to_string(prec)).c_str()))}
+{
     
         // Check for supported argument type
     if (!std::is_same<numtype, std::complex<double>>::value && !std::is_same<numtype, cln::cl_N>::value) {
@@ -44,7 +50,8 @@ LiSK::LiSK<numtype>::LiSK(const size_t n, const size_t prec) : _prec(prec<17 ? 1
     }
     
         // Initilise constants by respecting user choice and the following default minimum
-	std::unordered_map<std::string, size_t> default_max_values = {{"nHarmNum",3},{"nPosZeta",4},{"nNegZeta",100},{"nFactorials",100},{"nBernNum",100},{"nLiCij",100},{"nLiBn_eq59",50}};
+	std::unordered_map<std::string, size_t> default_max_values = {
+            {"nHarmNum",3},{"nPosZeta",4},{"nNegZeta",100},{"nFactorials",100},{"nBernNum",100},{"nLiCij",100},{"nLiBn_eq59",50}};
 	
 	for (auto x : _user_max_values) {
 		default_max_values[x.first] = std::max(default_max_values[x.first], x.second);
@@ -122,7 +129,7 @@ numtype LiSK::LiSK<numtype>::Li4(const numtype x) {
 template <typename numtype>
 numtype LiSK::LiSK<numtype>::Li22(const numtype x, const numtype y) {
 	
-	const auto one=Re((numtype)1);
+	const auto one = Re((numtype)1);
 	const numtype tx = _add_iep(x), ty = _add_iep(y);
 	
 		//Special cases from (A.1)-(A.3) of 1601.02649
@@ -130,28 +137,20 @@ numtype LiSK::LiSK<numtype>::Li22(const numtype x, const numtype y) {
 	
 	if (is_zero(x-one) && is_zero(y-one)) return (((numtype)3)*_constants.PosZeta[4])/((numtype)4);
 	if (is_zero(x+one) && is_zero(y+one)) return -(((numtype)3)*_constants.PosZeta[4])/((numtype)16);
-
-#if 0	// Using the defining sum gives better results
-	if (is_zero(x-y)) {
-		const numtype Li2 = _Li2(tx);
-		return (Li2*Li2 - _Li4(tx*tx))/((numtype)2);
-	}
-#endif
 	
 	if (is_zero(one/x-y)) {
 		
 			// Check if inside of radius of convergence or if stuffle
 			// relation is needed
 		if (abs(x)<=1) {
-			
-			const numtype lmty=log(-ty), Li2=_Li2(ty), &zeta2=_constants.PosZeta[2];
-			
+			const numtype lmty = log(-ty), Li2 = _Li2(ty), &zeta2 = _constants.PosZeta[2];
 			return ((numtype)3)*_Li4(ty) - Li2*(Li2 + lmty*lmty + ((numtype)6)*zeta2)/((numtype)2) - (((numtype)2)*zeta2*zeta2)/((numtype)5);
 			
 		} else {
 				// Li_22(y,x)
-			const numtype lmtx=log(-tx), Li2x =_Li2(tx), &zeta2=_constants.PosZeta[2];
-			const numtype Li22_yx = ((numtype)3)*_Li4(tx) - Li2x*(Li2x + lmtx*lmtx + ((numtype)6)*zeta2)/((numtype)2) - (((numtype)2)*zeta2*zeta2)/((numtype)5);
+			const numtype lmtx = log(-tx), Li2x = _Li2(tx), &zeta2 = _constants.PosZeta[2];
+			const numtype Li22_yx = ((numtype)3)*_Li4(tx) - Li2x*(Li2x + lmtx*lmtx + ((numtype)6)*zeta2)/((numtype)2)
+                    - (((numtype)2)*zeta2*zeta2)/((numtype)5);
 			
 			return -Li22_yx - _Li4(tx*ty) + Li2x*_Li2(ty);
 		}
@@ -172,7 +171,7 @@ template <typename numtype>
 template <typename T>
 T LiSK::LiSK<numtype>::_vec_max(const std::vector<T> v) const {
     
-    T tmp= (v.size()==0 ? T() : v[0]);
+    T tmp = (v.size()==0 ? T() : v[0]);
     for(auto i : v) tmp = std::max(tmp, i);
     return tmp;
 }
@@ -285,7 +284,6 @@ void LiSK::LiSK<numtype>::_LiCij_extend() {
         const size_t nend   = _vec_max<size_t>({_constants_clR.max_values["nLiCij"]+1,nstart});
         
         for (size_t j=nstart; j<nend; ++j) {
-            
             if (!i) (j==0 ? v[0].push_back(cln::cl_I(1)) : v[0].push_back(0));
             else {
                 
@@ -308,7 +306,6 @@ void LiSK::LiSK<numtype>::_LiBn_eq59_extend() {
     auto &v = _constants_clR.LiBn_eq59;
     const size_t nmax = _constants_clR.max_values["nLiBn_eq59"];
     for (size_t m=0; m<3; ++m) {
-        
             // nstart and nend define start and end index n in LiBn_eq59
         const size_t nstart = v[m].size()+1;
         const size_t nend   = _vec_max<size_t>({nmax+1,nstart});
@@ -389,13 +386,11 @@ numtype LiSK::LiSK<numtype>::_Li2(const numtype& x){
 	const auto one = Re((numtype)1);
 	
 	if (Re(x)<=one/2 && abs(x)<=one) {
-		
 		const numtype al = -log(one-x), res = al - al*al/((numtype)4);
 		return _Li_sumBn(res, al, 2,true);
 	}
 	else if (Re(x)>one/2 && abs(x-one)<=one){
-		
-		const numtype al=-log(x), res=_constants.PosZeta[2]-al-al*al/((numtype)4)+al*log(al);
+		const numtype al = -log(x), res = _constants.PosZeta[2]-al-al*al/((numtype)4)+al*log(al);
 		return _Li_sumBn(res, al, 2);
 	}
 	else{
@@ -409,14 +404,12 @@ template <typename numtype>
 numtype LiSK::LiSK<numtype>::_Li3(const numtype& x){
 	
 	const auto one = Re((numtype)1);
-	const numtype two=2, three=3, four=4;
+	const numtype two = 2, three = 3, four = 4;
 	
 	if (Re(x)<=one/2 && abs(x)<=one) {
-		
 		return _Lin_1mexpal(3, x);
 	}
 	else if (Re(x)>one/2 && abs(x-one)<=one){
-		
 		const numtype al  = -log(x), alsq(al*al);
 		const numtype res = _constants.PosZeta[3]-_constants.PosZeta[2]*al+(three*alsq)/four+alsq*al/(three*four)-alsq/two*log(al);
 		return _Li_sumBn(res, al, 3,false,true);
@@ -433,22 +426,21 @@ template <typename numtype>
 numtype LiSK::LiSK<numtype>::_Li4(const numtype& x){
 	
 	const auto one = Re((numtype)1);
-	const numtype two=2, four=4, six=6, eight=8, eleven=11;
+	const numtype two = 2, four = 4, six = 6, eight = 8, eleven = 11;
 	
 	if (Re(x)<=one/2 && abs(x)<=one) {
-		
 		return _Lin_1mexpal(4, x);
 	}
 	else if (Re(x)>one/2 && abs(x-one)<=one){
-		
 		const numtype al  = -log(x), alsq(al*al);
-		const numtype res = _constants.PosZeta[4] - _constants.PosZeta[3]*al + _constants.PosZeta[2]/two*alsq - (eleven*alsq*al)/(six*six) - alsq*alsq/(six*eight) + alsq*al/six*log(al);
+		const numtype res = _constants.PosZeta[4] - _constants.PosZeta[3]*al + _constants.PosZeta[2]/two*alsq - (eleven*alsq*al)/(six*six)
+                - alsq*alsq/(six*eight) + alsq*al/six*log(al);
 		return _Li_sumBn(res, al, 4);
 	}
 	else{
 			// If this case is reached use inversion relation. Li(1/t) is then
 			// always evaluated by the first if-condition
-		const numtype lxsq = log(-x)*log(-x), &zeta2=_constants.PosZeta[2];
+		const numtype lxsq = log(-x)*log(-x), &zeta2 = _constants.PosZeta[2];
 		return -Li4(one/x) - lxsq*lxsq/(four*six) - zeta2/two*lxsq - (((numtype)7)*zeta2*zeta2)/((numtype)10);
 	}
 }
@@ -480,7 +472,7 @@ numtype LiSK::LiSK<numtype>::_Lin_1mexpal(const size_t n, const numtype& x){
 	assert(n>0); // Li_n -> n>0
 	const auto one = Re((numtype)1);
 	const numtype al = -log(one-x);
-	numtype alpow(al), res=0, tmp=0, prev_res=0;
+	numtype alpow(al), res = 0, tmp = 0, prev_res = 0;
 	size_t j = 0;
 	
 		// Adapt constants if necessary
@@ -513,7 +505,7 @@ numtype LiSK::LiSK<numtype>::_Lin_expal(const size_t n, const numtype& x){
 	
 	assert(n>0); // Li_n -> n>0
 	const numtype al = -log(x);
-	numtype alpow=1, tmp=0, res=0, prev_res=0;
+	numtype alpow = 1, tmp = 0, res = 0, prev_res = 0;
 	numtype sgn = 1; size_t m = 0;
 	auto &mv = _constants_clR.max_values;
 	
@@ -557,7 +549,7 @@ template <typename numtype>
 numtype LiSK::LiSK<numtype>::_Lin_inverse(const size_t n, const numtype &x) {
 	
 	assert(n>=2); // n=1 is trivial
-	const auto one=Re((numtype)1), two=Re((numtype)2);
+	const auto one = Re((numtype)1), two = Re((numtype)2);
 	const numtype sgn = ((n-1)%2) ? -1 : 1;
 	const numtype lx = log(-x);
 	numtype res = 0;
@@ -583,10 +575,10 @@ template <typename numtype>
 numtype LiSK::LiSK<numtype>::_Li_sumBn(const numtype &precal, const numtype &al, const size_t n, const bool fac_2n, const bool sign){
 	
 	assert(n>=2 && n<=4); // only for Li_n, n=2,3,4
-	const auto one=Re((numtype)1), two=Re((numtype)2);
+	const auto one = Re((numtype)1), two = Re((numtype)2);
 	const numtype alsq(al*al), alfac(Pow(al,(int)n-1));
-	numtype alpow(alsq), tmp=0, res(precal), prev_res=0;
-	size_t m=1;
+	numtype alpow(alsq), tmp = 0, res(precal), prev_res = 0;
+	size_t m = 1;
 	
 	do {
 			// Compute more constants if necessary
@@ -618,19 +610,16 @@ numtype LiSK::LiSK<numtype>::_Li_sumBn(const numtype &precal, const numtype &al,
 template <typename numtype>
 numtype LiSK::LiSK<numtype>::_Li22(const numtype& x, const numtype& y) {
 	
-	const auto one=Re((numtype)1);
-	const auto ax=abs(x), axy=abs(x*y);
+	const auto one = Re((numtype)1);
+	const auto ax = abs(x), axy = abs(x*y);
 	
 	if (ax<one && axy<one) {
-		
 		return _Li22_orig(x, y);
 	}
 	else if (ax>=one && axy>=one){
-		
 		return _Li22_inversion(x, y);
 	}
 	else{
-		
 		return _Li22_stuffle(x, y);
 	}
 }
@@ -642,7 +631,7 @@ numtype LiSK::LiSK<numtype>::_Li22(const numtype& x, const numtype& y) {
 template <typename numtype>
 numtype LiSK::LiSK<numtype>::_Li22_orig(const numtype &x, const numtype &y) const {
 	
-    numtype xpow=x*x, res=0, tmp=0, prev_res=0;
+    numtype xpow = x*x, res = 0, tmp = 0, prev_res = 0;
     std::vector<numtype> ypow;
     ypow.push_back(y);
     
@@ -683,11 +672,11 @@ numtype LiSK::LiSK<numtype>::_Li22_stuffle(const numtype &x, const numtype &y) {
 template <typename numtype>
 numtype LiSK::LiSK<numtype>::_Li22_inversion(const numtype &x, const numtype &y) {
 	
-	const auto one=Re((numtype)1);
-	const numtype &Pisq_6=_constants.PosZeta[2], mxy=-x*y, invx=one/x, lmxy=log(mxy), lmxy2=lmxy*lmxy, lx2=Pow(log(-x),2);
+	const auto one = Re((numtype)1);
+	const numtype &Pisq_6 = _constants.PosZeta[2], mxy = -x*y, invx = one/x, lmxy = log(mxy), lmxy2 = lmxy*lmxy, lx2 = Pow(log(-x),2);
 	
 	return _Li22(invx, one/y) - _Li4(-mxy) + ((numtype)3)*(_Li4(invx)+_Li4(y)) + ((numtype)2)*(_Li3(invx)-_Li3(y))*lmxy
-	+ _Li2(invx)*(Pisq_6+lmxy2/((numtype)2)) + _Li2(y)*(lmxy2-lx2)/((numtype)2);
+            + _Li2(invx)*(Pisq_6+lmxy2/((numtype)2)) + _Li2(y)*(lmxy2-lx2)/((numtype)2);
 }
 
 
@@ -697,7 +686,8 @@ numtype LiSK::LiSK<numtype>::_Li22_inversion(const numtype &x, const numtype &y)
     // Template specialisation via namespace scope "LiSK::" is supported
     // by clang but not gcc. Hence, put everything into LiSK namespace
 namespace LiSK {
-	
+
+
 /*************************************************************************
  *                                                                       *
  *            Double Precision Specific Implementation                   *
@@ -708,7 +698,7 @@ namespace LiSK {
  ********************************************/
 template <> inline
 std::complex<double> LiSK<std::complex<double>>::convert(const cln::cl_R &x) const {
-    return std::complex<double>(cln::double_approx(x),0);
+    return {cln::double_approx(x),0};
 }
     
 /********************************************
@@ -724,7 +714,8 @@ std::complex<double> LiSK<std::complex<double>>::_add_iep(const std::complex<dou
  *  ErrorEstimate                           *
  ********************************************/
 template <> inline
-bool LiSK<std::complex<double>>::_ErrorEstimate(const std::complex<double>& res, const std::complex<double>& prev_res, const std::complex<double>& current) const{
+bool LiSK<std::complex<double>>::_ErrorEstimate(const std::complex<double>& res, const std::complex<double>& prev_res,
+                                                const std::complex<double>& current) const{
     return res!=prev_res || cln::zerop((cln::cl_R)abs(current));
 }
 	
@@ -779,11 +770,19 @@ cln::cl_N LiSK<cln::cl_N>::_add_iep(const cln::cl_N &x) const {
 }
     
 /********************************************
+ *  is_zero									*
+ ********************************************/
+template <> inline
+bool LiSK<cln::cl_N>::is_zero(const cln::cl_N &x) const{
+    return cln::zerop(x);
+}
+    
+/********************************************
  *  ErrorEstimate                           *
  ********************************************/    
 template <> inline
 bool LiSK<cln::cl_N>::_ErrorEstimate(const cln::cl_N& res, const cln::cl_N& prev_res, const cln::cl_N& current) const{
-    return res!=prev_res || cln::zerop(current);
+    return res!=prev_res || is_zero(current);
 }
 	
 /********************************************
@@ -792,14 +791,6 @@ bool LiSK<cln::cl_N>::_ErrorEstimate(const cln::cl_N& res, const cln::cl_N& prev
 template <> inline
 cln::cl_N LiSK<cln::cl_N>::Pow(const cln::cl_N &x, const int n) const{
 	return cln::expt(x, (cln::cl_I)n);
-}
-	
-/********************************************
- *  is_zero									*
- ********************************************/
-template <> inline
-bool LiSK<cln::cl_N>::is_zero(const cln::cl_N &x) const{
-	return cln::zerop(x);
 }
     
 } // End namespace LiSK
