@@ -631,27 +631,24 @@ numtype LiSK::LiSK<numtype>::_Li22(const numtype& x, const numtype& y) {
 template <typename numtype>
 numtype LiSK::LiSK<numtype>::_Li22_orig(const numtype &x, const numtype &y) const {
 	
-    numtype xpow = x*x, res = 0, tmp = 0, prev_res = 0;
-    std::vector<numtype> ypow;
-    ypow.push_back(y);
+    // Initilize by performing first step (i=2)
+    numtype xpow = x*x, ypow = y, res = xpow*ypow/((numtype)4), tmp = 0, prev_res = 0;
+    // log the sum over j
+    numtype prev_y = ypow;
+    size_t i = 3;
     
-    size_t i = 2;
     do {
-        
-        tmp=0;
-        prev_res = res;
-        for (size_t j=1; j<i; ++j) {
-            if (j>ypow.size()) {
-                ypow.push_back(ypow[j-2]*y);
-            }
-            tmp += ypow[j-1]/((numtype)(j*j));
-        }
-        tmp  = xpow/((numtype)(i*i))*tmp;
-        res  += tmp;
         xpow *= x;
+        ypow *= y;
+        prev_y += ypow/((numtype)((i-1)*(i-1)));
+        
+        // tmp and prev_res are only needed for the precision check
+        tmp  = xpow*prev_y/((numtype)(i*i));
+        prev_res = res;
+        res  += tmp;
 		i++;
         
-        } while ( _ErrorEstimate(res, prev_res, tmp) );
+        } while (_ErrorEstimate(res, prev_res, tmp));
     
     return res;
 }
