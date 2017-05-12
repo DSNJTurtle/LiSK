@@ -1,5 +1,5 @@
 //
-//  lisk.cpp
+//  lisk.ipp
 //  LiSK
 //
 //  Created by Sebastian on 08/03/16.
@@ -36,7 +36,7 @@
  *  C'stors                                *
  *******************************************/
 template <typename numtype>
-LiSK::LiSK<numtype>::LiSK(const size_t n, const size_t prec) :
+LiSK<numtype>::LiSK(const size_t n, const size_t prec) :
         _prec{prec<17 ? 17:prec},
         _constants_clR{n},
         _constants{n},
@@ -45,7 +45,7 @@ LiSK::LiSK<numtype>::LiSK(const size_t n, const size_t prec) :
 {
     
         // Check for supported argument type
-    if (!std::is_same<numtype, std::complex<double>>::value && !std::is_same<numtype, cln::cl_N>::value) {
+    if (!std::is_same<numtype, cp_d>::value && !std::is_same<numtype, cln::cl_N>::value) {
         throw std::runtime_error("Momentarily LiSK only supports 'std::complex<double>' and 'cln::cl_N' as types!");
     }
     
@@ -63,7 +63,7 @@ LiSK::LiSK<numtype>::LiSK(const size_t n, const size_t prec) :
 
 template <typename numtype>
 template <typename T>
-LiSK::LiSK<numtype>::constants<T>::constants(const size_t Li_n) {
+LiSK<numtype>::constants<T>::constants(const size_t Li_n) {
     
     max_values["nweight"] = Li_n;
     
@@ -82,7 +82,7 @@ LiSK::LiSK<numtype>::constants<T>::constants(const size_t Li_n) {
  * Li(n,x)                                  *
  ********************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::Li(const size_t n, const numtype x) {
+numtype LiSK<numtype>::Li(const size_t n, const numtype x) {
 	
     assert(n>0);
     switch (n) {
@@ -104,22 +104,22 @@ numtype LiSK::LiSK<numtype>::Li(const size_t n, const numtype x) {
 }
 
 template <typename numtype> inline
-numtype LiSK::LiSK<numtype>::Li1(const numtype x) {
+numtype LiSK<numtype>::Li1(const numtype x) {
     return _Li1(_add_iep(x));
 }
 
 template <typename numtype> inline
-numtype LiSK::LiSK<numtype>::Li2(const numtype x) {
+numtype LiSK<numtype>::Li2(const numtype x) {
     return _Li2(_add_iep(x));
 }
 
 template <typename numtype> inline
-numtype LiSK::LiSK<numtype>::Li3(const numtype x) {
+numtype LiSK<numtype>::Li3(const numtype x) {
     return _Li3(_add_iep(x));
 }
 
 template <typename numtype> inline
-numtype LiSK::LiSK<numtype>::Li4(const numtype x) {
+numtype LiSK<numtype>::Li4(const numtype x) {
     return _Li4(_add_iep(x));
 }
 
@@ -127,7 +127,7 @@ numtype LiSK::LiSK<numtype>::Li4(const numtype x) {
  * Li22(x,y)                                *
  ********************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::Li22(const numtype x, const numtype y) {
+numtype LiSK<numtype>::Li22(const numtype x, const numtype y) {
 	
 	const auto one = Re((numtype)1);
 	const numtype tx = _add_iep(x), ty = _add_iep(y);
@@ -169,7 +169,7 @@ numtype LiSK::LiSK<numtype>::Li22(const numtype x, const numtype y) {
     // Max value from vector
 template <typename numtype>
 template <typename T>
-T LiSK::LiSK<numtype>::_vec_max(const std::vector<T> v) const {
+T LiSK<numtype>::_vec_max(const std::vector<T> v) const {
     
     T tmp = (v.size()==0 ? T() : v[0]);
     for(auto i : v) tmp = std::max(tmp, i);
@@ -178,7 +178,7 @@ T LiSK::LiSK<numtype>::_vec_max(const std::vector<T> v) const {
 
     // Harmonic numbers
 template <typename numtype>
-void LiSK::LiSK<numtype>::_HarmNum_extend(){
+void LiSK<numtype>::_HarmNum_extend(){
     
         // nstart and nend define the start and end index of H_n
     auto &v = _constants_clR.HarmNum;
@@ -198,7 +198,7 @@ void LiSK::LiSK<numtype>::_HarmNum_extend(){
 
     // Positve zeta values
 template <typename numtype>
-void LiSK::LiSK<numtype>::_PosZeta_extend() {
+void LiSK<numtype>::_PosZeta_extend() {
     
         // nstart and nend define the start and end index of zeta(n)
     auto &v = _constants_clR.PosZeta;
@@ -214,7 +214,7 @@ void LiSK::LiSK<numtype>::_PosZeta_extend() {
 
     // Factorials
 template <typename numtype>
-void LiSK::LiSK<numtype>::_Factorials_extend() {
+void LiSK<numtype>::_Factorials_extend() {
     
         // nstart and nend define the start and end index of n!
     auto &v = _constants_clR.Factorials;
@@ -228,7 +228,7 @@ void LiSK::LiSK<numtype>::_Factorials_extend() {
 
     // Bernoulli numbers. Also zeros are stored for now.
 template <typename numtype>
-void LiSK::LiSK<numtype>::_BernNum_extend() {
+void LiSK<numtype>::_BernNum_extend() {
     
         // nstart and nend define the start and end index of B_n
     auto &v = _constants_clR.BernNum;
@@ -249,7 +249,7 @@ void LiSK::LiSK<numtype>::_BernNum_extend() {
 
     // Negative zeta values
 template <typename numtype>
-void LiSK::LiSK<numtype>::_NegZeta_extend() {
+void LiSK<numtype>::_NegZeta_extend() {
     
     auto &v = _constants_clR.NegZeta;
     const size_t nmax = _constants_clR.max_values["nNegZeta"];
@@ -266,7 +266,7 @@ void LiSK::LiSK<numtype>::_NegZeta_extend() {
 
     // Li constants Cij
 template <typename numtype>
-void LiSK::LiSK<numtype>::_LiCij_extend() {
+void LiSK<numtype>::_LiCij_extend() {
     
         // If requested weight is higher than previous one -> adapt size
     auto &v = _constants_clR.LiCij;
@@ -300,7 +300,7 @@ void LiSK::LiSK<numtype>::_LiCij_extend() {
 
     // Li constants LiBn_eq59. Specialised for 2<=n<=4
 template <typename numtype>
-void LiSK::LiSK<numtype>::_LiBn_eq59_extend() {
+void LiSK<numtype>::_LiBn_eq59_extend() {
     
         // m = n-2 for each Li_n, n>=2
     auto &v = _constants_clR.LiBn_eq59;
@@ -320,7 +320,7 @@ void LiSK::LiSK<numtype>::_LiBn_eq59_extend() {
  *  Init                                    *
  ********************************************/
 template <typename numtype>
-void LiSK::LiSK<numtype>::_init(const std::unordered_map<std::string, size_t> max_values) {
+void LiSK<numtype>::_init(const std::unordered_map<std::string, size_t> max_values) {
 	
         // Set input values and choose the correct limits
     std::unordered_map<std::string, size_t> &mv = _constants_clR.max_values;
@@ -376,12 +376,12 @@ void LiSK::LiSK<numtype>::_init(const std::unordered_map<std::string, size_t> ma
  *  Li(n,x)                                 *
  ********************************************/
 template <typename numtype> inline
-numtype LiSK::LiSK<numtype>::_Li1(const numtype& x){
+numtype LiSK<numtype>::_Li1(const numtype& x){
 	return -log(((numtype)1)-x);
 }
 
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Li2(const numtype& x){
+numtype LiSK<numtype>::_Li2(const numtype& x){
 	
 	const auto one = Re((numtype)1);
 	
@@ -401,7 +401,7 @@ numtype LiSK::LiSK<numtype>::_Li2(const numtype& x){
 }
 
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Li3(const numtype& x){
+numtype LiSK<numtype>::_Li3(const numtype& x){
 	
 	const auto one = Re((numtype)1);
 	const numtype two = 2, three = 3, four = 4;
@@ -423,7 +423,7 @@ numtype LiSK::LiSK<numtype>::_Li3(const numtype& x){
 }
 
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Li4(const numtype& x){
+numtype LiSK<numtype>::_Li4(const numtype& x){
 	
 	const auto one = Re((numtype)1);
 	const numtype two = 2, four = 4, six = 6, eight = 8, eleven = 11;
@@ -446,7 +446,7 @@ numtype LiSK::LiSK<numtype>::_Li4(const numtype& x){
 }
 
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Lin_basis(const size_t n, const numtype& x){
+numtype LiSK<numtype>::_Lin_basis(const size_t n, const numtype& x){
 	
 	const auto one = Re((numtype)1);
 	
@@ -467,7 +467,7 @@ numtype LiSK::LiSK<numtype>::_Lin_basis(const size_t n, const numtype& x){
  *  Li(n,x=1-exp(-alpha)), eq.(5.10)        *
  ********************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Lin_1mexpal(const size_t n, const numtype& x){
+numtype LiSK<numtype>::_Lin_1mexpal(const size_t n, const numtype& x){
 	
 	assert(n>0); // Li_n -> n>0
 	const auto one = Re((numtype)1);
@@ -501,7 +501,7 @@ numtype LiSK::LiSK<numtype>::_Lin_1mexpal(const size_t n, const numtype& x){
  *  Li(n,x=exp(-alpha)), eq.(5.8)           *
  ********************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Lin_expal(const size_t n, const numtype& x){
+numtype LiSK<numtype>::_Lin_expal(const size_t n, const numtype& x){
 	
 	assert(n>0); // Li_n -> n>0
 	const numtype al = -log(x);
@@ -546,7 +546,7 @@ numtype LiSK::LiSK<numtype>::_Lin_expal(const size_t n, const numtype& x){
  *  Inversion formula for Li(n,x), eq.(5.6)				*
  ********************************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Lin_inverse(const size_t n, const numtype &x) {
+numtype LiSK<numtype>::_Lin_inverse(const size_t n, const numtype &x) {
 	
 	assert(n>=2); // n=1 is trivial
 	const auto one = Re((numtype)1), two = Re((numtype)2);
@@ -572,7 +572,7 @@ numtype LiSK::LiSK<numtype>::_Lin_inverse(const size_t n, const numtype &x) {
  *  sum B_{2m}/(2m(2m+n-1)!)*al^{2m*n-1} from eq.(5.9)  *
  ********************************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Li_sumBn(const numtype &precal, const numtype &al, const size_t n, const bool fac_2n, const bool sign){
+numtype LiSK<numtype>::_Li_sumBn(const numtype &precal, const numtype &al, const size_t n, const bool fac_2n, const bool sign){
 	
 	assert(n>=2 && n<=4); // only for Li_n, n=2,3,4
 	const auto one = Re((numtype)1), two = Re((numtype)2);
@@ -608,7 +608,7 @@ numtype LiSK::LiSK<numtype>::_Li_sumBn(const numtype &precal, const numtype &al,
  *  Li22(x,y)								*
  ********************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Li22(const numtype& x, const numtype& y) {
+numtype LiSK<numtype>::_Li22(const numtype& x, const numtype& y) {
 	
 	const auto one = Re((numtype)1);
 	const auto ax = abs(x), axy = abs(x*y);
@@ -629,7 +629,7 @@ numtype LiSK::LiSK<numtype>::_Li22(const numtype& x, const numtype& y) {
  *  from eq.(6.1)                           *
  ********************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Li22_orig(const numtype &x, const numtype &y) const {
+numtype LiSK<numtype>::_Li22_orig(const numtype &x, const numtype &y) const {
 	
     // Initilize by performing first step (i=2)
     numtype xpow = x*x, ypow = y, res = xpow*ypow/((numtype)4), tmp = 0, prev_res = 0;
@@ -658,7 +658,7 @@ numtype LiSK::LiSK<numtype>::_Li22_orig(const numtype &x, const numtype &y) cons
  *  from eq.(6.3)                           *
  ********************************************/
 template <typename numtype> inline
-numtype LiSK::LiSK<numtype>::_Li22_stuffle(const numtype &x, const numtype &y) {
+numtype LiSK<numtype>::_Li22_stuffle(const numtype &x, const numtype &y) {
     return -_Li22(y, x) - _Li4(x*y) + _Li2(x)*_Li2(y);
 }
 
@@ -667,7 +667,7 @@ numtype LiSK::LiSK<numtype>::_Li22_stuffle(const numtype &x, const numtype &y) {
  *  from eq.(6.4)                           *
  ********************************************/
 template <typename numtype>
-numtype LiSK::LiSK<numtype>::_Li22_inversion(const numtype &x, const numtype &y) {
+numtype LiSK<numtype>::_Li22_inversion(const numtype &x, const numtype &y) {
 	
 	const auto one = Re((numtype)1);
 	const numtype &Pisq_6 = _constants.PosZeta[2], mxy = -x*y, invx = one/x, lmxy = log(mxy), lmxy2 = lmxy*lmxy, lx2 = Pow(log(-x),2);
@@ -680,11 +680,6 @@ numtype LiSK::LiSK<numtype>::_Li22_inversion(const numtype &x, const numtype &y)
 /************************************************************************
  *                   Specialised auxillary functions					*
  ************************************************************************/
-    // Template specialisation via namespace scope "LiSK::" is supported
-    // by clang but not gcc. Hence, put everything into LiSK namespace
-namespace LiSK {
-
-
 /*************************************************************************
  *                                                                       *
  *            Double Precision Specific Implementation                   *
@@ -694,7 +689,7 @@ namespace LiSK {
  *  Convert to double                       *
  ********************************************/
 template <> inline
-std::complex<double> LiSK<std::complex<double>>::convert(const cln::cl_R &x) const {
+cp_d LiSK<cp_d>::convert(const cln::cl_R &x) const {
     return {cln::double_approx(x),0};
 }
     
@@ -702,7 +697,7 @@ std::complex<double> LiSK<std::complex<double>>::convert(const cln::cl_R &x) con
  *  Add imaginary part                      *
  ********************************************/
 template <> inline
-std::complex<double> LiSK<std::complex<double>>::_add_iep(const std::complex<double> &x) const {
+cp_d LiSK<cp_d>::_add_iep(const cp_d &x) const {
     return x - _iep_d;
 }
 
@@ -711,8 +706,7 @@ std::complex<double> LiSK<std::complex<double>>::_add_iep(const std::complex<dou
  *  ErrorEstimate                           *
  ********************************************/
 template <> inline
-bool LiSK<std::complex<double>>::_ErrorEstimate(const std::complex<double>& res, const std::complex<double>& prev_res,
-                                                const std::complex<double>& current) const{
+bool LiSK<cp_d>::_ErrorEstimate(const cp_d& res, const cp_d& prev_res, const cp_d& current) const{
     return res!=prev_res || cln::zerop((cln::cl_R)abs(current));
 }
 	
@@ -720,7 +714,7 @@ bool LiSK<std::complex<double>>::_ErrorEstimate(const std::complex<double>& res,
  *  Power									*
  ********************************************/
 template <> inline
-std::complex<double> LiSK<std::complex<double>>::Pow(const std::complex<double> &x, const int n) const{
+cp_d LiSK<cp_d>::Pow(const cp_d &x, const int n) const{
 	return std::pow(x,n);
 }
 	
@@ -728,7 +722,7 @@ std::complex<double> LiSK<std::complex<double>>::Pow(const std::complex<double> 
  *  is_zero									*
  ********************************************/
 template <> inline
-bool LiSK<std::complex<double>>::is_zero(const std::complex<double> &x) const{
+bool LiSK<cp_d>::is_zero(const cp_d &x) const{
 	return cln::zerop(cln::complex(x.real(), x.imag()));
 }
 
@@ -789,5 +783,3 @@ template <> inline
 cln::cl_N LiSK<cln::cl_N>::Pow(const cln::cl_N &x, const int n) const{
 	return cln::expt(x, (cln::cl_I)n);
 }
-    
-} // End namespace LiSK

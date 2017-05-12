@@ -33,6 +33,12 @@
 /** LiSK namespace */
 namespace LiSK {
     
+    /** 
+     * Type defs
+     * @note Define subsequently used abbreviations
+     */
+    typedef std::complex<double> cp_d;
+    
     /**
      * LiSK - Library for Evaluating Classical Polylogarithms and Li_22
      * @note A lightweight library for evaluating classical polylogarithms
@@ -90,7 +96,7 @@ namespace LiSK {
          * @{
          */
         const int _offset = 2;
-        const std::complex<double> _iep_d;
+        const cp_d _iep_d;
         const cln::cl_N _iep_clN;
         /** @} */
         
@@ -418,11 +424,11 @@ namespace LiSK {
                 
     };
     
-} // End LiSK namespace
-
 /*************************************************************************
- *                   Implementation of LiSK                              *
- *************************************************************************/
+*                   Implementation of LiSK                              *
+*************************************************************************/
 #include "lisk.ipp"
+    
+} // End LiSK namespace
 
 #endif /* lisk_hpp */
