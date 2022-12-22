@@ -7,7 +7,7 @@ Sebastian Kirchner (sebastian.t.kirchnerREMOVETHIS@gmail.com)
 
 ---
 
-##Installation
+## Installation
 
 **LiSK** is a complete _header-only_ library, i.e. the library does not have to be built separately but only the header file must be included in the user's code via the usual
 
@@ -30,7 +30,7 @@ in the **example** directory. If **CLN** is not found automatically the _CLN\_IN
 
 ---
 
-##Usage
+## Usage
 
 In the following **T** denotes one of the two currently supported types 
 `std::complex<double>` or `cln::cl_N`. The first action should be to create a **LiSK** object of type `T` and precision `p` via
